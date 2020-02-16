@@ -8,26 +8,18 @@
 Blackjack game.
 '''
 import random
+import pyfiglet
+import colorama
 
 
 # In[2]:
 
 
-ranks = (
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    'Jack',
-    'Queen',
-    'King')
-suits = ('Spade', 'Clover', 'Diamond', 'Heart')
+#ranks = ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King')
+ranks = ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
+#suits = ('Spade', 'Clover', 'Diamond', 'Heart')
+suits = ('S', 'C', 'D', 'H')
+#values = {'1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, 'Jack':10, 'Queen':10, 'King':10}
 values = {
     '1': 1,
     '2': 2,
@@ -39,9 +31,9 @@ values = {
     '8': 8,
     '9': 9,
     '10': 10,
-    'Jack': 10,
-    'Queen': 10,
-    'King': 10}
+    'J': 10,
+    'Q': 10,
+    'K': 10}
 
 
 # In[3]:
@@ -52,6 +44,71 @@ class game_help():
 
 
 # In[4]:
+
+
+def card_graph(cards, hidden=None):
+
+    colorama.init(autoreset=True)
+    card_len = len(cards)
+
+    if hidden is not None:
+
+        print(f'::::::::::\t' * 2, end='')
+        print('')
+        print(f'::      ::\t', end='')
+        print(f'::     {cards[1].suit}::')
+        print(f'::      ::\t' * 2, end='')
+        print('')
+        print(f'::HIDDEN::\t', end='')
+        rank = cards[1].rank.rjust(2, ' ')
+        print(f'::  {rank}  ::\t', end='')
+        print('')
+        print(f'::      ::\t' * 2, end='')
+        print('')
+        print(f'::      ::\t', end='')
+        print(f'::     {cards[1].suit}::')
+        print(f'::::::::::\t' * 2, end='')
+        print('')
+
+    else:
+        print(f'::::::::::\t' * card_len, end='')
+        print('')
+        for i in range(0, card_len):
+            print(f'::     {cards[i].suit}::\t', end='')
+        print('')
+        print(f'::      ::\t' * card_len, end='')
+        print('')
+        for i in range(0, card_len):
+            rank = cards[i].rank.rjust(2, ' ')
+            print(f'::  {rank}  ::\t', end='')
+        print('')
+        print(f'::      ::\t' * card_len, end='')
+        print('')
+        for i in range(0, card_len):
+            print(f'::     {cards[i].suit}::\t', end='')
+        print('')
+        print(f'::::::::::\t' * card_len, end='')
+        print('')
+
+
+# def graphics(a):
+#     pass
+#
+# def card_graph(suit,rank):
+#
+#
+#
+#     colorama.init(autoreset=True)
+#     print(f'::::::::::')
+#     print(f'::     {suit}::')
+#     print(f'::      ::')
+#     print(f'::   {rank}  ::')
+#     print(f'::      ::')
+#     print(f'::     {suit}::')
+#     print(f'::::::::::')
+#
+
+# In[5]:
 
 
 class Player():
@@ -132,12 +189,13 @@ class Player():
 
     def display(self):
 
-        print(f'{self.name} has the following cards :')
-        print(f'######################################################')
-        for card in self.cards:
-            print(f'# {card.rank} of {card.suit}  ', end='')
-            print('#')
-        print(f'######################################################')
+        print(f'     {self.name.upper()}\'s CARDS :')
+        # print(f'######################################################')
+        # for card in self.cards:
+        # print(f'# {card.rank} of {card.suit}  ',end='')
+        # print('#')
+        card_graph(self.cards)
+        # print(f'######################################################')
         print('\n')
 
     def win_bet(self, bet):
@@ -150,7 +208,7 @@ class Player():
         pass
 
 
-# In[5]:
+# In[6]:
 
 
 class Dealer():
@@ -174,22 +232,23 @@ class Dealer():
         else:
             self.value = sum([card.card_value() for card in self.cards])
 
-    def display(self):
+    def display(self, hidden=None):
 
-        print(f'Dealer has the following cards :')
-        print(f'######################################################')
-        if len(self.cards) == 2:  # This is the initial display
-            print(
-                f'# {self.cards[0].rank} of {self.cards[0].suit}  # XX HIDDEN XX #')
-        else:
-            for card in self.cards:
-                print(f'# {card.rank} of {card.suit}  ', end='')
-                print('#')
-        print(f'######################################################')
+        print(f'     DEALERS\'s CARDS :')
+        # print(f'######################################################')
+        # if len(self.cards) == 2:  #This is the initial display
+        #    print(f'# {self.cards[0].rank} of {self.cards[0].suit}  # XX HIDDEN XX #')
+        # else:
+        #    for card in self.cards:
+        #        print(f'# {card.rank} of {card.suit}  ',end='')
+        #        print('#')
+        # print(f'######################################################')
+        card_graph(self.cards, hidden)
+
         print('\n')
 
 
-# In[6]:
+# In[7]:
 
 
 class Card():
@@ -204,7 +263,7 @@ class Card():
         return values[self.rank]
 
 
-# In[7]:
+# In[8]:
 
 
 class Deck():
@@ -254,6 +313,9 @@ class Deck():
 # 5. multideck
 # 6. pygame  : In future, display game using pygame library.
 #
+# ### BUG ###
+# after hitting and standing. even if values are same. player loses. check
+#
 #
 # ### cases ###
 # ## case 1 ##
@@ -283,7 +345,7 @@ class Deck():
 #
 #
 
-# In[8]:
+# In[9]:
 
 
 def printing(player, result):
@@ -339,7 +401,7 @@ def printing(player, result):
         print('\n\n')
 
 
-# In[9]:
+# In[10]:
 
 
 def blackjack_check(dealer, player):
@@ -356,7 +418,7 @@ def blackjack_check(dealer, player):
         return 'na'
 
 
-# In[10]:
+# In[11]:
 
 
 def bust_check(dealer=None, player=None):
@@ -373,16 +435,21 @@ def bust_check(dealer=None, player=None):
             return 'na'
 
 
-# In[11]:
+# In[12]:
 
 
 def win_check(dealer, player):
 
-    return 'win' if dealer.value < player.value else 'lost' if dealer.value > player.value else 'push'
+    if dealer.value < player.value:
+        return 'win'
+    elif dealer.value > player.value:
+        return 'lost'
+    else:
+        return 'push'
     # This push is a tie, Not a blackjack push
 
 
-# In[12]:
+# In[13]:
 
 
 def hit_or_stand(player):
@@ -393,7 +460,7 @@ def hit_or_stand(player):
     return hors
 
 
-# In[13]:
+# In[14]:
 
 
 def game():
@@ -424,15 +491,18 @@ def game():
 
     for card in play_deck.draw(player1):
         player1.cards.append(card)
-    ##### Inducing ace #### REMOVE AFTERWARDS ######
-    # player1.cards[0] = Card('Spade','1')  #debug
-    # player1.cards[1] = Card('Spade','10') # debug
-    player1.set_value()
+    ##### Inducing Values for debugging #### REMOVE AFTERWARDS ######
+    # player1.cards[0] = Card('S','10')  #debug
+    # player1.cards[1] = Card('C','10') # debug
+    # player1.set_value()
+    # dealer.cards[0] = Card('H','10')  #debug
+    # dealer.cards[1] = Card('D','10') # debug
+    # dealer.set_value()
     # print(f'Initial player value : {player1.value}')   # debug
 
     ### Display cards and values ###
     print('\n\n' * 100)
-    dealer.display()
+    dealer.display(hidden='x')
     player1.display()
 
     ### Win check ###  ### this needs to be improved ### Special check 1st instance ###
@@ -453,7 +523,7 @@ def game():
                 print(player1.value)
                 player1.set_value()
 
-                dealer.display()
+                dealer.display(hidden='x')
                 player1.display()
 
                 bcheck = blackjack_check(
@@ -471,10 +541,13 @@ def game():
                     break
 
             elif hors in {'s', 'stand'}:
-                print(dealer.value)
+                print(dealer.value)  # debug
+                print(player1.value)  # debug
                 while dealer.value < 17:
                     dealer.cards.append(play_deck.hit())  # NOT WORKING ###
                     dealer.set_value()
+                    print(dealer.value)  # debug
+                    print(player1.value)  # debug
                 dealer.display()
                 player1.display()
 
@@ -492,7 +565,7 @@ def game():
                     break
 
                 wcheck = win_check(dealer, player1)
-                # print(f'wcheck : {wcheck}')  # debug
+                print(f'wcheck : {wcheck}')  # debug
                 printing(player1, wcheck)
                 break
 
