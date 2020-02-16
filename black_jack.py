@@ -124,8 +124,7 @@ class Player():
         self.id = Player.count
 
         self.bet = 0  # start bet is zero when player created.
-        print(
-            f'Player No. {self.id} created. Name : {self.name} , Balance : {self.bank}')
+        print(f'Player created.\nName : {self.name} \nBalance : ${self.bank}')
 
         self.value = 0  # value at start is zero
         self.cards = list()
@@ -179,11 +178,12 @@ class Player():
 
     def set_value(self):
 
-        # Ace present check for blackjack condition , Note cards are objects
-        if '1' in [card.rank for card in self.cards]:
-            if sum([card.card_value() for card in self.cards]
-                   ) == 11:  # If ace is considered as 11, value will be 11 + 10
-                self.value = 21
+        card_sum = sum([card.card_value() for card in self.cards])
+
+        if '1' in [card.rank for card in self.cards] and card_sum == 11:
+            # Ace present check for blackjack condition , Note cards are objects
+            # If ace is considered as 11, value will be 11 + 10
+            self.value = 21
         else:
             self.value = sum([card.card_value() for card in self.cards])
 
@@ -197,6 +197,11 @@ class Player():
         card_graph(self.cards)
         # print(f'######################################################')
         print('\n')
+
+    def cards_clear(self):
+        ''' This function is to clear cards and value on replay'''
+        self.cards.clear()
+        self.value = 0
 
     def win_bet(self, bet):
         pass
@@ -222,13 +227,12 @@ class Dealer():
 
     def set_value(self):
 
-        #######self.value = sum([ card.card_value() for card in self.cards ])
-        # print(self.value)
-        # Ace present check for blackjack condition , Note cards are objects
-        if '1' in [card.rank for card in self.cards]:
-            if sum([card.card_value() for card in self.cards]
-                   ) == 11:  # If ace is considered as 11, value will be 11 + 10
-                self.value = 21
+        card_sum = sum([card.card_value() for card in self.cards])
+
+        if '1' in [card.rank for card in self.cards] and card_sum == 11:
+            # Ace present check for blackjack condition , Note cards are objects
+            # If ace is considered as 11, value will be 11 + 10
+            self.value = 21
         else:
             self.value = sum([card.card_value() for card in self.cards])
 
@@ -246,6 +250,11 @@ class Dealer():
         card_graph(self.cards, hidden)
 
         print('\n')
+
+    def cards_clear(self):
+        ''' This function is to clear cards and value on replay'''
+        self.cards.clear()
+        self.value = 0
 
 
 # In[7]:
@@ -282,7 +291,8 @@ class Deck():
         ''' This function is used to shuffle the deck. '''
         random.shuffle(self.deck)
 
-    def draw(self, gamer):
+    # def draw(self,gamer):
+    def draw(self):
         ''' This function is to draw initial card from the deck. Gamer is either players or dealer object. '''
         return self.deck.pop(), self.deck.pop()  # pop two cards from the deck list and return
         # print(len(self.deck))                      #lenght for debug
@@ -301,9 +311,10 @@ class Deck():
 # 5. dealer has no option to draw until his count crosses 17 [ ace is valued accordingly ] - done
 # 6. store purse for replay.
 # 7. ace conition of dealer at first draw : needs to let player play or insure.
-# 8. add create py file in ipynb
+# 8. add create py file in ipynb - done
 # 9. better replay looping
-#
+# 10. store high score
+# 11. display final score
 #
 # ### future ###
 # 1. insurance
@@ -360,9 +371,9 @@ def printing(player, result):
     if result == 'pushb':              # Blackjack push or tie
         print('\n\n')
         print(f'Blackjack for {player.name} !')
-        for x in range(0, 5):
-            print('Checking dealer;s cards.....', end='')
-        print(f'Blackjack for dealer as well !')
+        print('Checking dealer;s cards.....   ', end='')
+        print(f'Blackjack for dealer as well ! Game tie !')
+        print(f'Tie for {player.name} and dealer !')
         graffiti('push')
     elif result == 'push':             # Normal push or tie
         print('\n\n')
@@ -457,40 +468,159 @@ def hit_or_stand(player):
     hors = str(input(f'{player.name}, Do you want to hit or stand ? [H/S] :'))
     while hors.lower() not in {'h', 's', 'hit', 'stand'}:
         hors = str(input(f'{player.name}, Enter hit or stand only ? [H/S] :'))
-    return hors
+    return hors.lower()
 
+
+# def game():
+#
+#     ''' This function is to conduct the game. '''
+#     ### Create players for the game ###
+#     players = list()   # For supporting multiplayer in future
+#     name = Player.get_name()
+#     bank = Player.get_bank(name)
+#     players.append(Player(name,bank))   #Player created and appended to playes list
+#
+#
+#     ### Create a dealer for the game ###
+#     dealer = Dealer()
+#
+#
+#     ### Setup deck ###
+#     play_deck = Deck()
+#     #print([(x.suit,x.rank) for x in play_deck.deck ])  #print deck for debug
+#
+#     ### Bet amount ###
+#     player1 = players[0]         #Since currently single player game
+#     player1.get_bet()
+#
+#
+#     ### Draw the cards for dealer and players ###
+#     for card in play_deck.draw(dealer):
+#         dealer.cards.append(card)
+#     dealer.set_value()
+#     #print(f'Initial dealer value {dealer.value}') # debug
+#
+#     for card in play_deck.draw(player1):
+#         player1.cards.append(card)
+#     ##### Inducing Values for debugging #### REMOVE AFTERWARDS ######
+#     #player1.cards[0] = Card('S','10')  #debug
+#     #player1.cards[1] = Card('C','10') # debug
+#     #player1.set_value()
+#     #dealer.cards[0] = Card('H','10')  #debug
+#     #dealer.cards[1] = Card('D','10') # debug
+#     #dealer.set_value()
+#     #print(f'Initial player value : {player1.value}')   # debug
+#
+#     ### Display cards and values ###
+#     print('\n\n'*100)
+#     dealer.display(hidden='x')
+#     player1.display()
+#
+#     ### Win check ###  ### this needs to be improved ### Special check 1st instance ###
+#     ##### PENDING #####
+#     ##### EVEN IF DEALER HAS BLACK JACK IN DRAW, PLAYERS NEED TO PLAY, ONLY when they stand, dealer reveals bj
+#     ##### Concept of insurance ##########
+#     bcheck = blackjack_check(dealer, player1)
+#     #print({player1.value})   # debug
+#     #print(f'{bcheck}')       # debug
+#     printing(player1, bcheck)
+#     if bcheck == 'na':     ### if initial check is ok
+#
+#         while True :
+#             hors = hit_or_stand(player1)
+#             if hors in {'h', 'hit'}:
+#                 player1.cards.append(play_deck.hit()) # player1.cards is a list, an atribute of player1 object
+#                 print(player1.value)
+#                 player1.set_value()
+#
+#                 dealer.display(hidden='x')
+#                 player1.display()
+#
+#                 bcheck = blackjack_check(dealer, player1)    # check if blackjack
+#                 printing(player1, bcheck)
+#                 if bcheck != 'na':
+#                     break
+#
+#                 bucheck = bust_check(player=player1)      # check if player1 is bust
+#                 #print(player1.value)          #debug
+#                 #print(f'{bucheck} buchec')    #debug
+#                 printing(player1, bucheck)
+#                 if bucheck != 'na':
+#                     break
+#
+#             elif hors in {'s', 'stand'}:
+#                 print(dealer.value) #debug
+#                 print(player1.value) # debug
+#                 while dealer.value < 17:
+#                     dealer.cards.append(play_deck.hit())    ### NOT WORKING ###
+#                     dealer.set_value()
+#                     print(dealer.value)  # debug
+#                     print(player1.value) # debug
+#                 dealer.display()
+#                 player1.display()
+#
+#                 bcheck = blackjack_check(dealer, player1)  # check if black jack
+#                 #print(f'bcheck {bcheck}')   #debug
+#                 printing(player1, bcheck)
+#                 if bcheck != 'na':
+#                     break
+#
+#                 bucheck = bust_check(dealer=dealer)        # check if dealer is bust
+#                 printing(dealer, bucheck)
+#                 if bucheck != 'na':
+#                     break
+#
+#                 wcheck = win_check(dealer, player1)
+#                 print(f'wcheck : {wcheck}')  # debug
+#                 printing(player1, wcheck)
+#                 break
+#
 
 # In[14]:
 
 
-def game():
+def game(replay=None, players=None, dealer=None):
     ''' This function is to conduct the game. '''
     ### Create players for the game ###
-    players = list()   # For supporting multiplayer in future
-    name = Player.get_name()
-    bank = Player.get_bank(name)
-    # Player created and appended to playes list
-    players.append(Player(name, bank))
+    if replay is None:
+        players = list()   # For supporting multiplayer in future
 
-    ### Create a dealer for the game ###
-    dealer = Dealer()
+        name = Player.get_name()
+        #bank = Player.get_bank(name)
+        bank = 1000
+
+        # Player created and appended to playes list
+        players.append(Player(name, bank))
+
+        ### Create a dealer for the game ###
+        dealer = Dealer()
+
+    else:
+        # If replay remember players name and balance, but remove cards from
+        # dealer and player
+        players = players
+        for player in players:
+            player.cards_clear()
+        dealer.cards_clear()
 
     ### Setup deck ###
     play_deck = Deck()
-    # print([(x.suit,x.rank) for x in play_deck.deck ])  #print deck for debug
+    print([(x.suit, x.rank) for x in play_deck.deck])  # print deck for debug
 
     ### Bet amount ###
     player1 = players[0]  # Since currently single player game
     player1.get_bet()
 
     ### Draw the cards for dealer and players ###
-    for card in play_deck.draw(dealer):
+    # for card in play_deck.draw(dealer):
+    for card in play_deck.draw():
         dealer.cards.append(card)
     dealer.set_value()
-    # print(f'Initial dealer value {dealer.value}') # debug
+    print(f'Initial dealer value {dealer.value}')  # debug
 
-    for card in play_deck.draw(player1):
+    for card in play_deck.draw():
         player1.cards.append(card)
+    player1.set_value()
     ##### Inducing Values for debugging #### REMOVE AFTERWARDS ######
     # player1.cards[0] = Card('S','10')  #debug
     # player1.cards[1] = Card('C','10') # debug
@@ -498,7 +628,7 @@ def game():
     # dealer.cards[0] = Card('H','10')  #debug
     # dealer.cards[1] = Card('D','10') # debug
     # dealer.set_value()
-    # print(f'Initial player value : {player1.value}')   # debug
+    print(f'Initial player value : {player1.value}')   # debug
 
     ### Display cards and values ###
     print('\n\n' * 100)
@@ -512,16 +642,20 @@ def game():
     bcheck = blackjack_check(dealer, player1)
     # print({player1.value})   # debug
     # print(f'{bcheck}')       # debug
-    printing(player1, bcheck)
-    if bcheck == 'na':  # if initial check is ok
+    if bcheck != 'na':
+        dealer.display()
+        player1.display()
+        printing(player1, bcheck)
+    elif bcheck == 'na':  # if initial check is ok
 
         while True:
             hors = hit_or_stand(player1)
             if hors in {'h', 'hit'}:
                 # player1.cards is a list, an atribute of player1 object
                 player1.cards.append(play_deck.hit())
-                print(player1.value)
                 player1.set_value()
+                print([(x.rank, x.suit) for x in player1.cards])  # debug
+                print(player1.value)  # debug
 
                 dealer.display(hidden='x')
                 player1.display()
@@ -569,6 +703,8 @@ def game():
                 printing(player1, wcheck)
                 break
 
+    return players, dealer      # for replay
+
 
 # In[15]:
 
@@ -594,11 +730,12 @@ def main():
         else:
             if start in {'y', 'Y'}:
                 print('\n\n' * 100)
+                players, dealer = game()
                 while True:  # Replay Loop ### TRY CATCH rmaining ###
-                    game()
                     replay = str(input('Play once again ? : [Y/N] '))
                     if replay in {'y', 'yes'}:
-                        continue
+                        players = game(
+                            replay=replay, players=players, dealer=dealer)
                     else:
                         break
 
