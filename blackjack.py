@@ -1,13 +1,31 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# # Future releases:
+# 1. Better highscore handling by using csv or pandas
+# 2. Better replay looping, code optimization
+# 3. Use pygame for displaying game
+# 4. Nano editor like options for hit stand
+# 5. Better clear screen
+# 6. Add colors
+# 7. Add better fonts for cards as well as text.
+#
+# ### gameplay :
+# 0. surrender
+# 1. insurance
+# 2. split
+# 3. double down
+# 4. multiplayer
+# 5. multideck
+#
+#
+
 # In[1]:
 
 
 import os
 import random
 import pyfiglet
-import colorama
 import time
 
 
@@ -66,7 +84,6 @@ class game_help():
 
 def card_graph(cards, hidden=None):
 
-    colorama.init(autoreset=True)
     card_len = len(cards)
 
     if hidden is not None:
@@ -213,7 +230,7 @@ class Player():
             if card_sum + 10 <= 21:
                 soft_hand = card_sum + 10
             else:
-                sof_hand = None
+                soft_hand = None
 
         if soft_hand is None or self.value == soft_hand:
             print('\n')
@@ -337,30 +354,6 @@ class Deck():
 
         return self.deck.pop()   # Pop card from the deck objects deck
 
-
-# # 1 player 1 dealer scenario basic
-# 1. first players chance - done
-# 2. if player stands then only dealer chance - done
-# 3. ace condition - done
-# 4. better display : show better cards, display dealers cards - done
-# 5. dealer has no option to draw until his count crosses 17 [ ace is valued accordingly ] - done
-# 6. store purse for replay. - done
-# 7. ace conition of dealer at first draw : needs to let player play or insure.
-# 8. add create py file in ipynb - done
-# 9. better replay looping
-# 10. store high score
-# 11. display final score - done
-# 12. PENDING : New info : Only if the first draw hits 21 its called blackjack. And blackjacks trounce even if multiple card values are summed to 21 - done
-#
-# ### future ###
-# 1. insurance
-# 2. split
-# 3. double down
-# 4. multiplayer
-# 5. multideck
-# 6. pygame  : In future, display game using pygame library.
-#
-#
 
 # In[9]:
 
@@ -810,7 +803,7 @@ def main():
             break
 
 
-# In[ ]:
+# In[20]:
 
 try:
     terminal = get_ipython().__class__.__name__
