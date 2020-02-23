@@ -6,12 +6,12 @@
 # 2. Better replay looping, code optimization
 # 3. Use pygame for displaying game
 # 4. Nano editor like options for hit stand
-# 5. Better clear screen
-# 6. Add colors
+# 5. Better clear screen - done
+# 6. Add colors - done
 # 7. Add better fonts for cards as well as text.
 #
 # ### gameplay :
-# 0. surrender
+# 0. surrender - done
 # 1. insurance
 # 2. split
 # 3. double down
@@ -20,17 +20,19 @@
 #
 #
 
-# In[1]:
+# In[5]:
 
 
-import os
-import random
-import pyfiglet
-import time
-import pandas as pd
+import os                     # To clear screen and check file
+import random                 # Random selection
+import pyfiglet               # Graffiti and ascii art
+import time                   # Sleep
+import pandas as pd           # Highscores csv
+from termcolor import colored  # Colour
+from colorama import init     # Used to initiate teminal for color
 
 
-# In[2]:
+# In[3]:
 
 
 #ranks = ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King')
@@ -56,7 +58,18 @@ space = '\t\t\t\t '
 spacec = '\t\t'  # for cards
 
 
-# In[3]:
+# In[ ]:
+
+
+def clearscreen():
+    ''' This function is to clear screen. '''
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
+
+
+# In[8]:
 
 
 class game_help():
@@ -73,7 +86,9 @@ class game_help():
         if player splits:
         if player insures:
     '''
-    print('\n' * 100)
+    # print('\n'*100)
+    clearscreen()
+    print('\n' * 3)
     print(
         pyfiglet.figlet_format(
             "Blackjack",
@@ -88,44 +103,85 @@ class game_help():
 def card_graph(cards, hidden=None):
     ''' This function draws the cards when displayed. '''
     card_len = len(cards)
+    init(autoreset=True)
 
     if hidden is not None:
 
-        print(f'{spacec}::::::::::' * 2, end='')
+        print(
+            f'{spacec}{colored("::::::::::",  color="white", on_color="on_blue")}' *
+            2,
+            end='')
         print('')
-        print(f'{spacec}::      ::', end='')
-        print(f'{spacec}::     {cards[1].suit}::')
-        print(f'{spacec}::      ::' * 2, end='')
+        print(
+            f'{spacec}{colored("::      ::",  color="white", on_color="on_blue")}',
+            end='')
+        print(
+            f'{spacec}{colored(f"::     {cards[1].suit}::",  color="white", on_color="on_blue")}')
+        print(
+            f'{spacec}{colored("::      ::",  color="white", on_color="on_blue")}' *
+            2,
+            end='')
         print('')
-        print(f'{spacec}::HIDDEN::', end='')
+        print(
+            f'{spacec}{colored("::HIDDEN::",  color="white", on_color="on_blue")}',
+            end='')
         rank = cards[1].rank.rjust(2, ' ')
-        print(f'{spacec}::  {rank}  ::', end='')
+        print(
+            f'{spacec}{colored(f"::  {rank}  ::",  color="white", on_color="on_blue")}',
+            end='')
         print('')
-        print(f'{spacec}::      ::' * 2, end='')
+        print(
+            f'{spacec}{colored("::      ::",  color="white", on_color="on_blue")}' *
+            2,
+            end='')
         print('')
-        print(f'{spacec}::      ::', end='')
-        print(f'{spacec}::     {cards[1].suit}::')
-        print(f'{spacec}::::::::::' * 2, end='')
+        print(
+            f'{spacec}{colored("::      ::",  color="white", on_color="on_blue")}',
+            end='')
+        print(
+            f'{spacec}{colored(f"::     {cards[1].suit}::",  color="white", on_color="on_blue")}')
+        print(
+            f'{spacec}{colored("::::::::::",  color="white", on_color="on_blue")}' *
+            2,
+            end='')
         print('')
 
     else:
-        print(f'{spacec}::::::::::' * card_len, end='')
+        print(
+            f'{spacec}{colored("::::::::::",  color="white", on_color="on_blue")}' *
+            card_len,
+            end='')
         print('')
         for i in range(0, card_len):
-            print(f'{spacec}::     {cards[i].suit}::', end='')
+            print(
+                f'{spacec}{colored(f"::     {cards[i].suit}::", color="white", on_color="on_blue")}',
+                end='')
         print('')
-        print(f'{spacec}::      ::' * card_len, end='')
+        print(
+            f'{spacec}{colored("::      ::",  color="white", on_color="on_blue")}' *
+            card_len,
+            end='')
         print('')
         for i in range(0, card_len):
             rank = cards[i].rank.rjust(2, ' ')
-            print(f'{spacec}::  {rank}  ::', end='')
+            print(
+                f'{spacec}{colored(f"::  {rank}  ::",  color="white", on_color="on_blue")}',
+                end='')
         print('')
-        print(f'{spacec}::      ::' * card_len, end='')
+        print(
+            f'{spacec}{colored("::      ::",  color="white", on_color="on_blue")}' *
+            card_len,
+            end='')
         print('')
         for i in range(0, card_len):
-            print(f'{spacec}::     {cards[i].suit}::', end='')
+            print(
+                f'{spacec}{colored(f"::     {cards[i].suit}::", color="white", on_color="on_blue")}',
+                end='')
         print('')
-        print(f'{spacec}::::::::::' * card_len, end='')
+        print(
+            f'{spacec}{colored("::::::::::",  color="white", on_color="on_blue")}' *
+            card_len,
+            end='')
         print('')
 
 
@@ -224,8 +280,7 @@ class Player():
 
     def display(self):
         ''' This function is to display player's cards. '''
-        print('\n')
-        print(f'{space}     {self.name.upper()}\'s CARDS :')
+        print(f'{space}     {self.name.upper()}\'s CARDS :\n')
         card_graph(self.cards)
 
         ### display soft hand ###
@@ -569,7 +624,8 @@ def surrender_or_play(player):
 
 def display_cards(dealer, player, hidden=None):
     ''' This function is to display cards. '''
-    print('\n' * 50)
+    clearscreen()  # changed
+    print('\n' * 3)
     dealer.display(hidden=hidden)
     player.display()
 
@@ -789,7 +845,8 @@ def main():
             print(f'{space}Enter either Y or N.')
         else:
             if start in {'y', 'Y'}:
-                print('\n' * 50)  # 100
+                clearscreen()  # changed  #100
+                print('\n' * 3)
                 players, dealer = game()
 
                 while True:  # Replay Loop ### TRY CATCH rmaining ###
@@ -823,16 +880,17 @@ def main():
                         ### Update and Display highscores ###
                         highscores = H.update_highscores(highscores, player1)
                         time.sleep(1)
-                        print('\n' * 50)
+                        clearscreen()  # changed
+                        print('\n' * 3)
                         print(
                             pyfiglet.figlet_format(
                                 'GoodBye',
                                 font='slant',
                                 width=100,
                                 justify='center'))
-                        print('\n' * 5)
+                        print('\n' * 3)
                         H.display_highscores(highscores)
-
+                        print('\n' * 3)
                         break
                     else:
                         continue
