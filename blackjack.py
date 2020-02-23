@@ -9,6 +9,7 @@
 # 5. Better clear screen - done
 # 6. Add colors - done
 # 7. Add better fonts for cards as well as text.
+# 8. merge surrender option in H or S question as "surrender"
 #
 # ### gameplay :
 # 0. surrender - done
@@ -20,7 +21,7 @@
 #
 #
 
-# In[5]:
+# In[1]:
 
 
 import os                     # To clear screen and check file
@@ -32,7 +33,7 @@ from termcolor import colored  # Colour
 from colorama import init     # Used to initiate teminal for color
 
 
-# In[3]:
+# In[2]:
 
 
 #ranks = ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King')
@@ -58,7 +59,7 @@ space = '\t\t\t\t '
 spacec = '\t\t'  # for cards
 
 
-# In[ ]:
+# In[3]:
 
 
 def clearscreen():
@@ -69,7 +70,7 @@ def clearscreen():
         os.system('clear')
 
 
-# In[8]:
+# In[4]:
 
 
 class game_help():
@@ -97,7 +98,7 @@ class game_help():
             justify='center'))
 
 
-# In[4]:
+# In[5]:
 
 
 def card_graph(cards, hidden=None):
@@ -185,7 +186,7 @@ def card_graph(cards, hidden=None):
         print('')
 
 
-# In[5]:
+# In[6]:
 
 
 class Player():
@@ -227,29 +228,29 @@ class Player():
                 break
         return name
 
-    @staticmethod
-    def get_bank(name):
-        ''' This function is to get the purse value of the player. '''
-        while True:
-            try:
-                bank = int(
-                    input(f'{space}Hello {name}! Enter your purse value : $'))
-                if bank < 100:
-                    raise ValueError
-            except ValueError:
-                print(
-                    f'{space}Purse value cannot be less than $100 / alphabets / blank.')
-            else:
-                break
-
-        return bank
+    # @staticmethod
+    # def get_bank(name):
+    #
+    #    ''' This function is to get the purse value of the player. '''
+    #    while True:
+    #        try:
+    #            bank = int(input(f'{space}Hello {name}! Enter your purse value : $'))
+    #            if bank < 100 :
+    #                raise ValueError
+    #        except ValueError:
+    #            print(f'{space}Purse value cannot be less than $100 / alphabets / blank.')
+    #        else:
+    #            break
+    #
+    #    return bank
 
     def get_bet(self):
         ''' This function is to get the amount of bet player want's to set. '''
         while True:
             try:
                 self.bet = int(
-                    input(f'{space}Hello {self.name}! How much would you like to bet : $'))
+                    float(
+                        input(f'{space}Hello {self.name}! How much would you like to bet : $')))
                 if self.bet > self.bank or self.bet < 10:
                     raise ValueError
             except ValueError:
@@ -330,7 +331,7 @@ class Player():
         pass
 
 
-# In[6]:
+# In[7]:
 
 
 class Dealer():
@@ -382,7 +383,7 @@ class Dealer():
         self.blackjack = None
 
 
-# In[7]:
+# In[8]:
 
 
 class Card():
@@ -398,7 +399,7 @@ class Card():
         return values[self.rank]
 
 
-# In[8]:
+# In[9]:
 
 
 class Deck():
@@ -426,7 +427,7 @@ class Deck():
         return self.deck.pop()   # Pop card from the deck objects deck
 
 
-# In[9]:
+# In[10]:
 
 
 def graffiti(result):
@@ -438,10 +439,10 @@ def graffiti(result):
             font='slant',
             width=100,
             justify='center'))
-    print('\n')
+    # print('\n')
 
 
-# In[10]:
+# In[11]:
 
 
 def cases(player, dealer, result):
@@ -511,7 +512,7 @@ def cases(player, dealer, result):
         graffiti('surrender')
 
 
-# In[11]:
+# In[12]:
 
 
 def blackjack_check(dealer, player):
@@ -526,7 +527,7 @@ def blackjack_check(dealer, player):
         return 100
 
 
-# In[12]:
+# In[13]:
 
 
 def top_check(dealer, player):
@@ -537,7 +538,7 @@ def top_check(dealer, player):
         return 100  # not complete result , needs to stand
 
 
-# In[13]:
+# In[14]:
 
 
 def bust_check(dealer=None, player=None):
@@ -552,7 +553,7 @@ def bust_check(dealer=None, player=None):
     return 101
 
 
-# In[14]:
+# In[15]:
 
 
 def win_check(dealer, player):
@@ -573,7 +574,7 @@ def win_check(dealer, player):
     # This push is a tie, Not a blackjack push
 
 
-# In[15]:
+# In[16]:
 
 
 def surrender_check(dealer, player):
@@ -593,7 +594,7 @@ def surrender_check(dealer, player):
     return check, hors
 
 
-# In[16]:
+# In[17]:
 
 
 def hit_or_stand(player):
@@ -606,7 +607,7 @@ def hit_or_stand(player):
     return hors
 
 
-# In[17]:
+# In[18]:
 
 
 def surrender_or_play(player):
@@ -619,7 +620,7 @@ def surrender_or_play(player):
     return surr
 
 
-# In[18]:
+# In[19]:
 
 
 def display_cards(dealer, player, hidden=None):
@@ -630,7 +631,7 @@ def display_cards(dealer, player, hidden=None):
     player.display()
 
 
-# In[19]:
+# In[20]:
 
 
 class Highscores():
@@ -652,6 +653,7 @@ class Highscores():
         ''' This function is to update the highscore as well as store it. '''
         ### Add score to highscores ###
         highscores.loc[len(highscores)] = [None, player.name, player.bank]
+        highscores['Score'] = highscores['Score'].apply(int)
 
         ### Sort the highscores ###
         highscores.sort_values(
@@ -676,7 +678,7 @@ class Highscores():
             print(space + row)
 
 
-# In[20]:
+# In[21]:
 
 
 def game(replay=None, players=None, dealer=None):
@@ -818,7 +820,7 @@ def game(replay=None, players=None, dealer=None):
     return players, dealer      # for replay
 
 
-# In[21]:
+# In[22]:
 
 
 def main():
